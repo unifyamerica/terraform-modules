@@ -52,6 +52,7 @@ No modules.
 | <a name="input_tls_cert_domain_name"></a> [tls\_cert\_domain\_name](#input\_tls\_cert\_domain\_name) | Domain Name of TLS Cert to use for Frontend ELB | `any` | n/a | yes |
 | <a name="input_web_cpu_request"></a> [web\_cpu\_request](#input\_web\_cpu\_request) | Requested CPU for Web Pod | `any` | n/a | yes |
 | <a name="input_web_memory_request"></a> [web\_memory\_request](#input\_web\_memory\_request) | Requested Memory for Web Pod | `any` | n/a | yes |
+| <a name="input_web_replica_count"></a> [web\_replica\_count](#input\_web\_replica\_count) | Number of Web Containers. | `any` | n/a | yes |
 
 ## Outputs
 

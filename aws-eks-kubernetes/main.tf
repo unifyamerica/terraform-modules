@@ -35,7 +35,7 @@ resource "kubernetes_deployment" "deployment" {
         namespace = kubernetes_namespace.namespace.metadata.0.name
     }
     spec {
-        replicas = 1
+        replicas = var.web_replica_count
         selector {
             match_labels = {
                 app = "web"

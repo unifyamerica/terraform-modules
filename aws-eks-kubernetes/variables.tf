@@ -10,6 +10,10 @@ variable "cron_replica_count" {
     description = "Number of Cron Containers. Set this to zero to turn off cron in EKS"
 }
 
+variable "web_replica_count" {
+    description = "Number of Web Containers."
+}
+
 variable "env_vars" {
   description = "Environment variables for Kubernetes deployment"
   type        = list(object({
