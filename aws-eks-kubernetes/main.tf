@@ -39,6 +39,14 @@ resource "kubernetes_deployment" "deployment" {
     ]
     spec {
         replicas = var.web_replica_count
+
+        strategy {
+          type = "RollingUpdate"
+          rolling_update {
+            max_unavailable = 0
+            max_surge = 1
+          }
+        }
         selector {
             match_labels = {
                 app = "web"
@@ -75,6 +83,34 @@ resource "kubernetes_deployment" "deployment" {
                   cpu    = var.web_cpu_request
                   memory = var.web_memory_request
                 }
+              }
+
+              readiness_probe {
+                http_get {
+                  path = "/health"
+                  port = 8000
+                }
+                period_seconds = 5
+                timeout_seconds = 2
+                failure_threshold = 3
+              }
+              startup_probe {
+                http_get {
+                  path = "/health"
+                  port = 8000
+                }
+                period_seconds = 5
+                failure_threshold = 30
+                timeout_seconds = 2
+              }
+              liveness_probe {
+                http_get {
+                  path = "/health"
+                  port = 8000
+                }
+                period_seconds = 10
+                failure_threshold = 3
+                timeout_seconds = 2
               }
             }
             volume {
