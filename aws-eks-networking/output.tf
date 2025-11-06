@@ -4,12 +4,12 @@ output "vpc_id" {
 }
 
 output "public_subnet_ids" {
-  value = module.vpc.public_subnets[*].id
+  value = module.vpc.public_subnets
   description = "List of IDs of the public subnets"
 }
 
 output "private_subnet_ids" {
-  value = module.vpc.private_subnets[*].id
+  value = module.vpc.private_subnets
   description = "List of IDs of the private subnets"
 }
 
@@ -24,26 +24,19 @@ output "public_route_table_id" {
 }
 
 output "nat_gateway_ids" {
-  value = module.vpc.nat_gateway_ids
+  value = module.vpc.nat_ids
   description = "List of NAT Gateway IDs"
 }
 
-output "vpc_id" {
-  value = module.networking.vpc_id
+output "application_subnets" {
+  value = slice(module.vpc.private_subnets, 0, length(module.vpc.private_subnets) / 2)
 }
 
-output "private_subnets" {
-  value = module.networking.private_subnets
+output "database_subnets" {
+  value = slice(module.vpc.private_subnets, length(module.vpc.private_subnets) / 2, length(module.vpc.private_subnets))
 }
 
-output "public_subnets" {
-  value = module.networking.public_subnets
-}
-
-output "eks_subnets" {
-  value = slice(module.networking.private_subnets, 0, length(module.networking.private_subnets) / 2)
-}
-
-output "rds_subnets" {
-  value = slice(module.networking.private_subnets, length(module.networking.private_subnets) / 2, length(module.networking.private_subnets))
+output "default_security_group_id" {
+  value = module.vpc.default_security_group_id
+  description = "ID of the default security group"
 }

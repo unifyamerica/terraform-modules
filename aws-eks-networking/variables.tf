@@ -23,24 +23,6 @@ variable "private_subnet_cidrs" {
   description = "List of CIDR blocks for private subnets"
 }
 
-variable "enable_nat_gateway" {
-  type = bool
-  description = "Enables a NAT Gateway in the public subnets"
-  default = true
-}
-
-variable "single_nat_gateway" {
-  type = bool
-  description = "Use a single NAT gateway for cost optimisation"
-  default = true
-}
-
-variable "enable_vpn_gateway" {
-  type = bool
-  description = "Should be true if you want to create a new VPN Gateway resource and attach it to the VPC"
-  default = false
-}
-
 variable "enable_dns_support" {
   type = bool
   description = "Should be true to enable DNS support in the VPC"
