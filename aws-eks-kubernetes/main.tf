@@ -34,8 +34,19 @@ resource "kubernetes_deployment" "deployment" {
         name = "web"
         namespace = kubernetes_namespace.namespace.metadata.0.name
     }
+    depends_on = [ 
+      kubernetes_job.migrate
+    ]
     spec {
         replicas = var.web_replica_count
+
+        strategy {
+          type = "RollingUpdate"
+          rolling_update {
+            max_unavailable = 0
+            max_surge = 1
+          }
+        }
         selector {
             match_labels = {
                 app = "web"
@@ -72,6 +83,34 @@ resource "kubernetes_deployment" "deployment" {
                   cpu    = var.web_cpu_request
                   memory = var.web_memory_request
                 }
+              }
+
+              readiness_probe {
+                http_get {
+                  path = "/health"
+                  port = 8000
+                }
+                period_seconds = 5
+                timeout_seconds = 2
+                failure_threshold = 3
+              }
+              startup_probe {
+                http_get {
+                  path = "/health"
+                  port = 8000
+                }
+                period_seconds = 5
+                failure_threshold = 30
+                timeout_seconds = 2
+              }
+              liveness_probe {
+                http_get {
+                  path = "/health"
+                  port = 8000
+                }
+                period_seconds = 10
+                failure_threshold = 3
+                timeout_seconds = 2
               }
             }
             volume {
@@ -173,6 +212,55 @@ resource "kubernetes_deployment" "cron" {
           }
         }
     }
+}
+
+resource "kubernetes_job" "migrate" {
+  metadata {
+    name = "django-migrate-${local.image_tag_sanitized}"
+    namespace = kubernetes_namespace.namespace.metadata[0].name
+    labels = {
+      app = "web"
+      release = local.image_tag_sanitized
+    }
+  }
+
+  spec {
+    backoff_limit = 1
+    ttl_seconds_after_finished = 3600
+
+    template {
+      metadata {
+        labels = {
+          app = "web"
+          job = "django-migrate"
+          release = local.image_tag_sanitized
+        }
+      }
+      spec {
+        restart_policy = "Never"
+
+        container {
+          name = "migrate"
+          image = "${var.ecr_repo_url}:${var.image_tag}"
+          image_pull_policy = "IfNotPresent"
+
+          command = ["python", "manage.py", "migrate", "--noinput"]
+
+          env {
+            name = "KUBERNETES_LABEL"
+            value = "migrate"
+          }
+          dynamic "env" {
+            for_each = var.env_vars
+            content {
+              name = env.value.name
+              value = env.value.value
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 resource "aws_eks_addon" "observability-addon" {
