@@ -9,7 +9,7 @@ module "eks" {
   subnet_ids = var.private_subnets
 
   enable_irsa = true
-
+  create_kms_key = false
   authentication_mode                    = "API_AND_CONFIG_MAP"
   enable_cluster_creator_admin_permissions = true
   access_entries                         = local.access_entries
