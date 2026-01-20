@@ -35,7 +35,7 @@ locals {
     local.base_addons,
     var.enable_cloudwatch_logs ? {
       amazon-cloudwatch-observability = {
-        most_recent = true
+        addon_version = "v5.1.0-eksbuild.1"
       }
     } : {}
   )
