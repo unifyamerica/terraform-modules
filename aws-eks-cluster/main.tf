@@ -16,9 +16,9 @@ module "eks" {
 
   addons = local.addons
 
-  eks_managed_node_groups = {
+  self_managed_node_groups = {
     main = {
-      name           = "${var.environment}-${var.cluster_name}-mng"
+      name           = "${var.environment}-${var.cluster_name}-ng"
       instance_types = [var.instance_type]
 
       min_size     = 1
