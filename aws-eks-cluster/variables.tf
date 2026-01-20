@@ -59,3 +59,8 @@ variable "enable_cloudwatch_logs" {
   type    = bool
   default = true
 }
+
+variable "vpc_cidr_block" {
+    type = string
+    description = "The CIDR block of the VPC where the EKS cluster is deployed"
+}

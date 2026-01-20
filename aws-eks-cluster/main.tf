@@ -5,8 +5,8 @@ module "eks" {
   name               = "${var.environment}-${var.cluster_name}"
   kubernetes_version = var.cluster_version
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id     = var.vpc_id
+  subnet_ids = var.private_subnets
 
   enable_irsa = true
 
@@ -43,7 +43,7 @@ module "eks" {
       from_port   = 30000
       to_port     = 32767
       type        = "ingress"
-      cidr_blocks = [module.vpc.vpc_cidr_block]
+      cidr_blocks = [var.vpc_cidr_block]
     }
   } : {}
 
