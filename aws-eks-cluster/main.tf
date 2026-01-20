@@ -1,39 +1,53 @@
 module "eks" {
-    source = "terraform-aws-modules/eks/aws"
-    version = "17.24.0"
-    cluster_name = "${var.environment}-${var.cluster_name}"
-    cluster_version = var.cluster_version
-    subnets = var.private_subnets
-    vpc_id = var.vpc_id
-    enable_irsa = true
-    workers_group_defaults = {
-        root_volume_type = "gp2"
-    }
-    worker_groups = [
+  source  = "terraform-aws-modules/eks/aws"
+  version = "21.14.0"
+
+  name               = "${var.environment}-${var.cluster_name}"
+  kubernetes_version = var.cluster_version
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  enable_irsa = true
+
+  authentication_mode                    = "API_AND_CONFIG_MAP"
+  enable_cluster_creator_admin_permissions = true
+  access_entries                         = local.access_entries
+
+  addons = local.addons
+
+  eks_managed_node_groups = {
+    main = {
+      name           = "${var.environment}-${var.cluster_name}-mng"
+      instance_types = [var.instance_type]
+
+      min_size     = 1
+      max_size     = max(2, var.worker_count)
+      desired_size = var.worker_count
+
+      iam_role_additional_policies = merge(
         {
-            name                          = "${var.environment}-${var.cluster_name}-worker-group"
-            instance_type                 = var.instance_type
-            additional_userdata           = "echo nothing"
-            additional_security_group_ids = [var.additional_security_group_ids]
-            asg_desired_capacity          = var.worker_count
+          CloudWatchAgentServerPolicy = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
         },
-    ]
-    workers_additional_policies = [
-      aws_iam_policy.fluentbit_cloudwatch_access.arn,
-      "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-    ]
-    map_roles = [
         {
-            rolearn  = module.eks.worker_iam_role_arn
-            username = "system:node:{{EC2PrivateDNSName}}"
-            groups = [
-                "system:bootstrappers",
-                "system:nodes",
-            ]
+          FluentBitCloudWatchAccess = aws_iam_policy.fluentbit_cloudwatch_access.arn
         }
-    ]
-    map_users = var.map_users
-    tags      = var.tags
+      )
+    }
+  }
+
+  node_security_group_additional_rules = var.allow_nodeport_from_vpc ? {
+    ingress_nodeports_from_vpc = {
+      description = "Allow NodePort range from VPC (ALB instance targets hit nodeports)"
+      protocol    = "tcp"
+      from_port   = 30000
+      to_port     = 32767
+      type        = "ingress"
+      cidr_blocks = [module.vpc.vpc_cidr_block]
+    }
+  } : {}
+
+  tags = var.tags
 }
 
 module "lb_role" {
@@ -108,11 +122,11 @@ resource "kubernetes_service_account" "service-account" {
 }
 
 data "aws_eks_cluster" "cluster" {
-    name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-    name = module.eks.cluster_id
+  name = module.eks.cluster_name
 }
 
 resource "aws_iam_policy" "fluentbit_cloudwatch_access" {

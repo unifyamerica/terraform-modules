@@ -49,3 +49,13 @@ variable "map_users" {
 variable "tags" { 
     type = map(string)
 }
+
+variable "allow_nodeport_from_vpc" {
+  type    = bool
+  default = true
+}
+
+variable "enable_cloudwatch_logs" {
+  type    = bool
+  default = true
+}
