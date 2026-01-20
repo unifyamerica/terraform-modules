@@ -15,6 +15,8 @@ module "eks" {
   access_entries                         = local.access_entries
 
   addons = local.addons
+  endpoint_public_access  = true
+  endpoint_private_access = true
 
   self_managed_node_groups = {
     main = {
