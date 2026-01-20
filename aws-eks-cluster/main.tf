@@ -121,14 +121,6 @@ resource "kubernetes_service_account" "service-account" {
   }
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_name
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
-
 resource "aws_iam_policy" "fluentbit_cloudwatch_access" {
   name   = "${var.environment}_${var.cluster_name}-fluentbit-cloudwatch-access"
   path   = "/"
