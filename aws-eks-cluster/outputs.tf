@@ -121,3 +121,18 @@ output "worker_iam_role_arn" {
   description = "worker iam role arn"
   value       = local.worker_iam_role_arn
 }
+
+output "aws_eks_cluster_endpoint" {
+  description = "Endpoint for EKS Cluster"
+  value       = module.eks.cluster_endpoint
+}
+
+output "aws_eks_cluster_ca_certificate" {
+  description = "CA Cert for Cluster authentication"
+  value       = module.eks.cluster_certificate_authority_data
+}
+
+output "aws_eks_cluster_token" {
+  description = "Token for Cluster authentication"
+  value       = data.aws_eks_cluster_auth.cluster.token
+}

@@ -106,6 +106,14 @@ resource "helm_release" "lb" {
   }
 }
 
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
+}
+
 resource "kubernetes_service_account" "service-account" {
   metadata {
     name = "aws-load-balancer-controller"
