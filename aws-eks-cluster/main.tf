@@ -21,8 +21,7 @@ module "eks" {
   self_managed_node_groups = {
     main = {
       name           = "${var.environment}-${var.cluster_name}-ng"
-      instance_types = [var.instance_type]
-
+      instance_type  = var.instance_type
       min_size     = 1
       max_size     = max(2, var.worker_count)
       desired_size = var.worker_count
