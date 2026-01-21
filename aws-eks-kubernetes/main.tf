@@ -89,10 +89,6 @@ resource "kubernetes_deployment" "deployment" {
                 http_get {
                   path = "/health"
                   port = 8000
-                  http_header {
-                    name  = "Host"
-                    value = "web.${var.environment}-${var.namespace}.svc.cluster.local"
-                  }
                 }
                 period_seconds = 5
                 timeout_seconds = 2
@@ -102,10 +98,6 @@ resource "kubernetes_deployment" "deployment" {
                 http_get {
                   path = "/health"
                   port = 8000
-                  http_header {
-                    name  = "Host"
-                    value = "web.${var.environment}-${var.namespace}.svc.cluster.local"
-                  }
                 }
                 period_seconds = 5
                 failure_threshold = 30
@@ -115,10 +107,6 @@ resource "kubernetes_deployment" "deployment" {
                 http_get {
                   path = "/health"
                   port = 8000
-                  http_header {
-                    name  = "Host"
-                    value = "web.${var.environment}-${var.namespace}.svc.cluster.local"
-                  }
                 }
                 period_seconds = 10
                 failure_threshold = 3
