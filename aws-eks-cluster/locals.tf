@@ -36,6 +36,15 @@ locals {
     var.enable_cloudwatch_logs ? {
       amazon-cloudwatch-observability = {
         addon_version = "v5.1.0-eksbuild.1"
+        configuration_values = jsonencode({
+          manager = {
+            applicationSignals = {
+              autoMonitor = {
+                monitorAllServices = false
+              }
+            }
+          }
+        })
       }
     } : {}
   )
