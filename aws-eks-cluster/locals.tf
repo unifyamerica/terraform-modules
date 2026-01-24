@@ -21,13 +21,13 @@ locals {
 
   base_addons = {
     coredns = {
-      most_recent = true
+      addon_version = "v1.13.1-eksbuild.1"
     }
     kube-proxy = {
-      most_recent = true
+      addon_version = "v1.33.7-eksbuild.2"
     }
     vpc-cni = {
-      most_recent = true
+      addon_version = "v1.21.1-eksbuild.1"
     }
   }
 
