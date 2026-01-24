@@ -18,7 +18,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_eks_addon.observability-addon](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_addon) | resource |
 | [kubernetes_deployment.cron](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_deployment.deployment](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_ingress_v1.ingress](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress_v1) | resource |
@@ -31,9 +30,6 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_eks_cluster_ca_certificate"></a> [aws\_eks\_cluster\_ca\_certificate](#input\_aws\_eks\_cluster\_ca\_certificate) | CA Cert for Cluster authentication | `any` | n/a | yes |
-| <a name="input_aws_eks_cluster_endpoint"></a> [aws\_eks\_cluster\_endpoint](#input\_aws\_eks\_cluster\_endpoint) | Endpoint for EKS Cluster | `any` | n/a | yes |
-| <a name="input_aws_eks_cluster_token"></a> [aws\_eks\_cluster\_token](#input\_aws\_eks\_cluster\_token) | Token for Cluster authentication | `any` | n/a | yes |
 | <a name="input_aws_eks_worker_role_arn"></a> [aws\_eks\_worker\_role\_arn](#input\_aws\_eks\_worker\_role\_arn) | AWS EKS Worker Role Arn | `any` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Region where EKS infra is deployed | `any` | n/a | yes |
 | <a name="input_cron_cpu_limit"></a> [cron\_cpu\_limit](#input\_cron\_cpu\_limit) | Limit CPU for Cron Pod | `any` | n/a | yes |
