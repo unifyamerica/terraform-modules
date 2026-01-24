@@ -132,7 +132,7 @@ output "aws_eks_cluster_ca_certificate" {
   value       = module.eks.cluster_certificate_authority_data
 }
 
-# output "aws_eks_cluster_token" {
-#   description = "Token for Cluster authentication"
-#   value       = data.aws_eks_cluster_auth.cluster.token
-# }
+output "aws_eks_cluster_token" {
+  description = "Token for Cluster authentication"
+  value       = data.aws_eks_cluster_auth.cluster.token
+}
