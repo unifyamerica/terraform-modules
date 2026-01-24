@@ -66,46 +66,46 @@ module "lb_role" {
   }
 }
 
-resource "helm_release" "lb" {
-  name       = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  version    = "1.7.2"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
-  depends_on = [
-    kubernetes_service_account.service-account
-  ]
+# resource "helm_release" "lb" {
+#   name       = "aws-load-balancer-controller"
+#   repository = "https://aws.github.io/eks-charts"
+#   version    = "1.7.2"
+#   chart      = "aws-load-balancer-controller"
+#   namespace  = "kube-system"
+#   depends_on = [
+#     kubernetes_service_account.service-account
+#   ]
 
-  set {
-    name  = "region"
-    value = var.region
-  }
+#   set {
+#     name  = "region"
+#     value = var.region
+#   }
 
-  set {
-    name  = "vpcId"
-    value = var.vpc_id
-  }
+#   set {
+#     name  = "vpcId"
+#     value = var.vpc_id
+#   }
 
-  set {
-    name  = "image.repository"
-    value = var.controller_image_repo
-  }
+#   set {
+#     name  = "image.repository"
+#     value = var.controller_image_repo
+#   }
 
-  set {
-    name  = "serviceAccount.create"
-    value = "false"
-  }
+#   set {
+#     name  = "serviceAccount.create"
+#     value = "false"
+#   }
 
-  set {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  }
+#   set {
+#     name  = "serviceAccount.name"
+#     value = "aws-load-balancer-controller"
+#   }
 
-  set {
-    name  = "clusterName"
-    value = "${var.environment}-${var.cluster_name}"
-  }
-}
+#   set {
+#     name  = "clusterName"
+#     value = "${var.environment}-${var.cluster_name}"
+#   }
+# }
 
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
@@ -115,20 +115,20 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
 }
 
-resource "kubernetes_service_account" "service-account" {
-  metadata {
-    name = "aws-load-balancer-controller"
-    namespace = "kube-system"
-    labels = {
-        "app.kubernetes.io/name"= "aws-load-balancer-controller"
-        "app.kubernetes.io/component"= "controller"
-    }
-    annotations = {
-      "eks.amazonaws.com/role-arn" = module.lb_role.iam_role_arn
-      "eks.amazonaws.com/sts-regional-endpoints" = "true"
-    }
-  }
-}
+# resource "kubernetes_service_account" "service-account" {
+#   metadata {
+#     name = "aws-load-balancer-controller"
+#     namespace = "kube-system"
+#     labels = {
+#         "app.kubernetes.io/name"= "aws-load-balancer-controller"
+#         "app.kubernetes.io/component"= "controller"
+#     }
+#     annotations = {
+#       "eks.amazonaws.com/role-arn" = module.lb_role.iam_role_arn
+#       "eks.amazonaws.com/sts-regional-endpoints" = "true"
+#     }
+#   }
+# }
 
 resource "aws_iam_policy" "fluentbit_cloudwatch_access" {
   name   = "${var.environment}_${var.cluster_name}-fluentbit-cloudwatch-access"
