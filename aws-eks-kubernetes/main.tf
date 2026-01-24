@@ -262,10 +262,3 @@ resource "kubernetes_job" "migrate" {
     }
   }
 }
-
-resource "aws_eks_addon" "observability-addon" {
-  count         = var.enable_cloudwatch_logs ? 1 : 0
-  addon_version = "v3.4.0-eksbuild.1"
-  cluster_name  = var.eks_cluster_id
-  addon_name    = "amazon-cloudwatch-observability"
-}
