@@ -261,4 +261,9 @@ resource "kubernetes_job" "migrate" {
       }
     }
   }
+
+  timeouts {
+    create = "15m"
+    update = "15m"
+  }
 }
