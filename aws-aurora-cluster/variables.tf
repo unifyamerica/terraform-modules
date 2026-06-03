@@ -23,18 +23,18 @@ variable "engine_version" {
 }
 
 variable "db_username" {
-  description = "Database master username"
+  description = "Database master username for scratch cluster creation"
   type        = string
 }
 
 variable "db_password" {
-  description = "Database master password"
+  description = "Database master password for scratch cluster creation"
   type        = string
   sensitive   = true
 }
 
 variable "db_name" {
-  description = "Initial database name"
+  description = "Initial database name for scratch cluster creation"
   type        = string
 }
 
@@ -56,7 +56,7 @@ variable "tags" {
 }
 
 variable "snapshot_identifier" {
-  description = "Snapshot identifier to restore from"
+  description = "Snapshot identifier to restore from. Leave empty to create a fresh empty cluster."
   type        = string
   default     = ""
 }
