@@ -13,6 +13,10 @@ No requirements.
 
 No modules.
 
+## Creation modes
+
+Leave `snapshot_identifier` empty to create a fresh empty Aurora PostgreSQL cluster with `db_username`, `db_password`, and `db_name`. Set `snapshot_identifier` to restore the cluster from an existing snapshot instead. Database migrations and bootstrap data are handled by the consuming application, not this module.
+
 ## Resources
 
 | Name | Type |
@@ -38,15 +42,15 @@ No modules.
 | <a name="input_autoscaling_target_cpu"></a> [autoscaling\_target\_cpu](#input\_autoscaling\_target\_cpu) | CPU threshold which will initiate autoscaling | `number` | `70` | no |
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | Prefix for the cluster identifier | `string` | n/a | yes |
 | <a name="input_db_instance_class"></a> [db\_instance\_class](#input\_db\_instance\_class) | Instance class for Aurora instances | `string` | n/a | yes |
-| <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Initial database name | `string` | n/a | yes |
-| <a name="input_db_password"></a> [db\_password](#input\_db\_password) | Database master password | `string` | n/a | yes |
-| <a name="input_db_username"></a> [db\_username](#input\_db\_username) | Database master username | `string` | n/a | yes |
+| <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Initial database name for cluster creation | `string` | n/a | yes |
+| <a name="input_db_password"></a> [db\_password](#input\_db\_password) | Database master password for cluster creation | `string` | n/a | yes |
+| <a name="input_db_username"></a> [db\_username](#input\_db\_username) | Database master username for cluster creation | `string` | n/a | yes |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Aurora engine version | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment name (e.g., dev, prod) | `string` | n/a | yes |
 | <a name="input_instance_count"></a> [instance\_count](#input\_instance\_count) | Number of Aurora instances | `number` | `2` | no |
 | <a name="input_predefined_metric_type"></a> [predefined\_metric\_type](#input\_predefined\_metric\_type) | The metric type to scale on. Valid values are `RDSReaderAverageCPUUtilization` and `RDSReaderAverageDatabaseConnections` | `string` | `"RDSReaderAverageCPUUtilization"` | no |
 | <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | Private subnet IDs for Aurora | `list(string)` | n/a | yes |
-| <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | Snapshot identifier to restore from | `string` | `""` | no |
+| <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | Snapshot identifier to restore from. Leave empty to create an empty cluster. | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | tags to apply to rds aurora cluster | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID | `string` | n/a | yes |
 
@@ -54,5 +58,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | n/a |
+| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | Writer endpoint for the Aurora cluster |
+| <a name="output_reader_endpoint"></a> [reader\_endpoint](#output\_reader\_endpoint) | Reader endpoint for the Aurora cluster |
 <!-- END_TF_DOCS -->
