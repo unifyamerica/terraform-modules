@@ -26,17 +26,6 @@ variable "aws_eks_worker_role_arn" {
     description = "AWS EKS Worker Role Arn"
 }
 
-variable "aws_eks_cluster_ca_certificate" {
-    description = "CA Cert for Cluster authentication"
-}
-
-variable "aws_eks_cluster_token" {
-   description = "Token for Cluster authentication" 
-}
-
-variable "aws_eks_cluster_endpoint" {
-   description = "Endpoint for EKS Cluster" 
-}
 
 variable "namespace" {
     description = "Kubernetes namespace"

@@ -3,14 +3,14 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.83 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.28 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.83 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.28 |
 | <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 
@@ -18,7 +18,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 17.24.0 |
+| <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 21.14.0 |
 | <a name="module_lb_role"></a> [lb\_role](#module\_lb\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | 5.41.0 |
 
 ## Resources
@@ -36,15 +36,18 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_additional_security_group_ids"></a> [additional\_security\_group\_ids](#input\_additional\_security\_group\_ids) | n/a | `string` | n/a | yes |
+| <a name="input_allow_nodeport_from_vpc"></a> [allow\_nodeport\_from\_vpc](#input\_allow\_nodeport\_from\_vpc) | n/a | `bool` | `true` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | n/a | `string` | n/a | yes |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | n/a | `string` | n/a | yes |
 | <a name="input_controller_image_repo"></a> [controller\_image\_repo](#input\_controller\_image\_repo) | n/a | `string` | n/a | yes |
+| <a name="input_enable_cloudwatch_logs"></a> [enable\_cloudwatch\_logs](#input\_enable\_cloudwatch\_logs) | n/a | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | n/a | `string` | n/a | yes |
 | <a name="input_map_users"></a> [map\_users](#input\_map\_users) | n/a | <pre>list(object({<br/>        userarn  = string<br/>        username = string<br/>        groups   = list(string)<br/>    }))</pre> | n/a | yes |
 | <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | n/a | `list(string)` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | n/a | yes |
+| <a name="input_vpc_cidr_block"></a> [vpc\_cidr\_block](#input\_vpc\_cidr\_block) | The CIDR block of the VPC where the EKS cluster is deployed | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | n/a | yes |
 | <a name="input_worker_count"></a> [worker\_count](#input\_worker\_count) | n/a | `string` | n/a | yes |
 
@@ -52,9 +55,9 @@
 
 | Name | Description |
 |------|-------------|
-| <a name="output_aws_eks_cluster_ca_certificate"></a> [aws\_eks\_cluster\_ca\_certificate](#output\_aws\_eks\_cluster\_ca\_certificate) | n/a |
-| <a name="output_aws_eks_cluster_endpoint"></a> [aws\_eks\_cluster\_endpoint](#output\_aws\_eks\_cluster\_endpoint) | n/a |
-| <a name="output_aws_eks_cluster_token"></a> [aws\_eks\_cluster\_token](#output\_aws\_eks\_cluster\_token) | n/a |
+| <a name="output_aws_eks_cluster_ca_certificate"></a> [aws\_eks\_cluster\_ca\_certificate](#output\_aws\_eks\_cluster\_ca\_certificate) | CA Cert for Cluster authentication |
+| <a name="output_aws_eks_cluster_endpoint"></a> [aws\_eks\_cluster\_endpoint](#output\_aws\_eks\_cluster\_endpoint) | Endpoint for EKS Cluster |
+| <a name="output_aws_eks_cluster_token"></a> [aws\_eks\_cluster\_token](#output\_aws\_eks\_cluster\_token) | Token for Cluster authentication |
 | <a name="output_cluster_endpoint"></a> [cluster\_endpoint](#output\_cluster\_endpoint) | Endpoint for EKS control plane. |
 | <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | EKS cluster ID. |
 | <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | Security group ids attached to the cluster control plane. |
