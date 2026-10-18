@@ -1,50 +1,66 @@
-<!-- BEGIN_TF_DOCS -->
-## Requirements
+# ElastiCache Redis OSS
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.83 |
+Provision a Redis OSS replication group, subnet group, security group, and optional
+source-security-group ingress rule. Configure the AWS provider in the caller.
 
-## Providers
+Existing required inputs remain `environment`, `vpc_id`, `source_security_group_id`,
+`replication_group`, and `subnet_ids`. Existing defaults and `new_primary_endpoint`
+output are retained. In particular, existing naming is:
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.83 |
+- Replication group ID: `${environment}-redis-${replication_group}`.
+- Subnet group name: `${replication_group}`.
+- Security group prefix: `${environment}-redis-${replication_group}`.
 
-## Modules
+The legacy defaults enable Multi-AZ and failover but default to one cache cluster.
+For a valid highly available deployment, explicitly use `num_cache_clusters = 2`
+or more; for a single-node cache, explicitly disable both availability options.
+This update preserves these defaults rather than changing existing callers.
 
-No modules.
+## Secure configuration
 
-## Resources
+```hcl
+module "cache" {
+  source = "../aws-elasticache-redis"
+  environment = "production"
+  replication_group = "api"
+  vpc_id = var.vpc_id
+  subnet_ids = var.private_subnet_ids
+  source_security_group_id = var.worker_security_group_id
+  node_type = "cache.t4g.micro"
+  num_cache_clusters = 2
+  cluster_mode = "disabled"
+  at_rest_encryption_enabled = true
+  transit_encryption_enabled = true
+  transit_encryption_mode = "required"
+  auth_token = var.redis_auth_token
+  snapshot_retention_limit = 0
+}
+```
 
-| Name | Type |
-|------|------|
-| [aws_elasticache_replication_group.redis_oss](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group) | resource |
-| [aws_elasticache_subnet_group.redis_subnet_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_subnet_group) | resource |
-| [aws_security_group.redis_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [aws_security_group_rule.redis_ingress_from_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
+`auth_token` is sensitive and optional. It requires TLS and must contain 16-128
+alphanumeric characters or the symbols `! & # $ ^ < > -`.
+See [AWS AUTH requirements](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/auth.html).
+It is stored in Terraform state; this module neither creates nor updates secrets.
+The provider's default token update strategy is ROTATE; retiring a previous token
+requires a coordinated SET operation. Use `rediss://` in TLS-enabled clients and
+URL-encode passwords embedded in connection URLs.
 
-## Inputs
+New optional inputs `replication_group_id`, `subnet_group_name`, and
+`security_group_name_prefix` override full names for callers migrating existing
+resources. Optional `description`, `subnet_group_description`, and
+`security_group_description` preserve resource descriptions. `network_tags` applies
+tags to subnet/security groups (default empty preserves legacy metadata); existing
+`tags` still applies to the replication group. `automatic_failover_enabled` and
+`multi_az_enabled` default true. Security, cluster mode, and backup inputs default
+null to retain existing provider behavior. No final snapshot is requested by this
+module. Existing `apply_immediately` still defaults true.
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_apply_immediately"></a> [apply\_immediately](#input\_apply\_immediately) | Apply change immediately or wait for maintenance window | `bool` | `true` | no |
-| <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Redis engine version | `string` | `"7.1"` | no |
-| <a name="input_environment"></a> [environment](#input\_environment) | Environment name (e.g., dev, prod) | `string` | n/a | yes |
-| <a name="input_node_type"></a> [node\_type](#input\_node\_type) | Redis node type | `string` | `"cache.t2.small"` | no |
-| <a name="input_num_cache_clusters"></a> [num\_cache\_clusters](#input\_num\_cache\_clusters) | Number of cache clusters (primary and replicas) this replication group will have | `number` | `1` | no |
-| <a name="input_parameter_group_name"></a> [parameter\_group\_name](#input\_parameter\_group\_name) | Parameter group to use | `string` | `"default.redis7"` | no |
-| <a name="input_port"></a> [port](#input\_port) | Redis port | `number` | `6379` | no |
-| <a name="input_replication_group"></a> [replication\_group](#input\_replication\_group) | Name for the new Redis replication group | `string` | n/a | yes |
-| <a name="input_source_security_group_id"></a> [source\_security\_group\_id](#input\_source\_security\_group\_id) | Source of SG where redis traffic is coming from | `string` | n/a | yes |
-| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of private subnet IDs | `list(string)` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to all resources | `map(string)` | `{}` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID | `string` | n/a | yes |
+Set `create_ingress_rule = false` to manage access rules outside this module.
+Additional outputs `security_group_id` and `port` support this composition.
+For backwards state compatibility, `moved.tf` moves the original ingress rule to
+its optional `[0]` address. Keep this file when upgrading existing deployments.
+Terraform 1.2+ is now required for move declarations and AUTH preconditions; tests require 1.7+.
 
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| <a name="output_new_primary_endpoint"></a> [new\_primary\_endpoint](#output\_new\_primary\_endpoint) | Primary endpoint of Redis cluster |
-<!-- END_TF_DOCS -->
+Validate using `terraform init -backend=false`, `terraform validate`, and
+`terraform test`. Tests mock AWS and cover legacy naming, external-rule composition,
+and rejection of insecure/invalid AUTH configuration without accessing AWS.
