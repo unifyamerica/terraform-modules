@@ -7,45 +7,60 @@ variable "cluster_version" {
 }
 
 variable "private_subnets" {
-    type = list(string)
+  type = list(string)
 }
 
 variable "vpc_id" {
-    type = string
+  type = string
 }
 
 variable "environment" {
-    type = string
+  type = string
 }
 
 variable "additional_security_group_ids" {
-    type = string
+  type = string
 }
 
 variable "instance_type" {
-    type = string
+  type = string
 }
 
 variable "worker_count" {
-    type = string
+  type = string
 }
 
 variable "region" {
-    type = string
+  type = string
 }
 
 variable "controller_image_repo" {
-    type = string
+  type = string
 }
 
 variable "map_users" {
-    type = list(object({
-        userarn  = string
-        username = string
-        groups   = list(string)
-    }))
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
 }
 
-variable "tags" { 
-    type = map(string)
+variable "tags" {
+  type = map(string)
+}
+
+variable "allow_nodeport_from_vpc" {
+  type    = bool
+  default = true
+}
+
+variable "enable_cloudwatch_logs" {
+  type    = bool
+  default = true
+}
+
+variable "vpc_cidr_block" {
+  type        = string
+  description = "The CIDR block of the VPC where the EKS cluster is deployed"
 }
