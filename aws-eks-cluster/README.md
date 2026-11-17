@@ -42,7 +42,7 @@
 | <a name="input_enable_cloudwatch_logs"></a> [enable\_cloudwatch\_logs](#input\_enable\_cloudwatch\_logs) | n/a | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | n/a | `string` | n/a | yes |
-| <a name="input_map_users"></a> [map\_users](#input\_map\_users) | n/a | <pre>list(object({<br/>        userarn  = string<br/>        username = string<br/>        groups   = list(string)<br/>    }))</pre> | n/a | yes |
+| <a name="input_map_users"></a> [map\_users](#input\_map\_users) | n/a | <pre>list(object({<br/>    userarn  = string<br/>    username = string<br/>    groups   = list(string)<br/>  }))</pre> | n/a | yes |
 | <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | n/a | `list(string)` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | n/a | yes |
