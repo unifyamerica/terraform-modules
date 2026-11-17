@@ -27,6 +27,15 @@ module "eks" {
       max_size               = max(2, var.worker_count)
       desired_size           = var.worker_count
 
+      instance_refresh = {
+        strategy = "Rolling"
+        preferences = {
+          min_healthy_percentage = 50
+          max_healthy_percentage = 100
+          instance_warmup        = 300
+        }
+      }
+
       iam_role_additional_policies = merge(
         {
           CloudWatchAgentServerPolicy = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
